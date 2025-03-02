@@ -23,6 +23,4 @@ public class File {
     @Lob
     private Blob file;
     private String downloadUrl;
-
-
 }

@@ -18,10 +18,12 @@ import java.lang.module.ResolutionException;
 import java.sql.SQLException;
 import java.util.List;
 
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
+
 @RestController
 @RequestMapping(path = "/files")
 @RequiredArgsConstructor
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:4200")
 public class FileController {
     private final IFileService fileService;
 
@@ -49,7 +51,7 @@ public class FileController {
         }
     }
 
-    @PostMapping
+    @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<FileDTO> saveFile(@RequestParam("file") MultipartFile file) {
         try {
             FileDTO savedFile = fileService.saveFile(file);
