@@ -2,6 +2,7 @@ package com.example.file_backup.controller;
 
 import com.example.file_backup.dto.FileDTO;
 import com.example.file_backup.exception.ResourceAlreadyExistException;
+import com.example.file_backup.exception.ResourceNotFound;
 import com.example.file_backup.model.File;
 import com.example.file_backup.service.file.IFileService;
 import lombok.RequiredArgsConstructor;
@@ -60,6 +61,19 @@ public class FileController {
                     HttpStatus.CREATED
             );
         } catch (ResourceAlreadyExistException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    e.getMessage()
+            );
+        }
+    }
+
+    @DeleteMapping(path = "/{fileId}")
+    public ResponseEntity<HttpStatus> deleteFile(@PathVariable Long fileId) {
+        try {
+            fileService.deleteFileById(fileId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (ResourceNotFound e) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     e.getMessage()
