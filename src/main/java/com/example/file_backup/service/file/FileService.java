@@ -35,6 +35,19 @@ public class FileService implements IFileService {
     }
 
     @Override
+    public List<FileDTO> getFilesByName(String filename) {
+        return fileRepository.findByFileNameContainingIgnoreCase(filename)
+                .stream()
+                .map((file) -> new FileDTO(
+                        file.getFileId(),
+                        file.getFileName(),
+                        file.getFileType(),
+                        file.getDownloadUrl()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public File getFileById(Long id) {
         return fileRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound(

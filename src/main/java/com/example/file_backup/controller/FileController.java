@@ -7,6 +7,7 @@ import com.example.file_backup.model.File;
 import com.example.file_backup.service.file.IFileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.lang.module.ResolutionException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
@@ -29,12 +31,17 @@ public class FileController {
     private final IFileService fileService;
 
     @GetMapping
-    public ResponseEntity<List<FileDTO>> getAllFiles() {
-        return ResponseEntity.ok(fileService.getAllFiles());
+    public ResponseEntity<List<FileDTO>> getAllFiles(@RequestParam(value = "filename", required = false)
+                                                     String filename) {
+        if (filename != null) {
+            return ResponseEntity.ok(fileService.getFilesByName(filename));
+        } else {
+            return ResponseEntity.ok(fileService.getAllFiles());
+        }
     }
 
     @GetMapping(path = "/{fileId}")
-    public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable Long fileId) throws SQLException {
+    public ResponseEntity<Resource> downloadFile(@PathVariable Long fileId) throws SQLException {
         try {
             File file = fileService.getFileById(fileId);
             ByteArrayResource resource = new ByteArrayResource(

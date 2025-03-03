@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface IFileService {
     public List<FileDTO> getAllFiles();
+    public List<FileDTO> getFilesByName(String filename);
     public File getFileById(Long id);
     public void deleteFileById(Long id);
     public FileDTO saveFile(MultipartFile file);
